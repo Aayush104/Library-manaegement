@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Navbar from "../Components/Navbar/Navbar";
 import image from "../assets/Landingbg.png";
 import Footer from "../Components/Footer/Footer";
+import Testimonial from "../Components/Testimonial/Testimonial";
 
 const Landing = () => {
   const features = [
@@ -117,6 +118,7 @@ const Landing = () => {
       </motion.div>
    
     </div>
+    <Testimonial />
     <Footer />
     </>
   );
