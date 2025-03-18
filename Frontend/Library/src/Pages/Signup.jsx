@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../Components/Navbar/Navbar";
 import Footer from "../Components/Footer/Footer";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,40 +16,55 @@ const Signup = () => {
   const [location, setLocation] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [memberType, setMemberType] = useState("reader");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
+    // Form validation
     if (password !== confirmPassword) {
       toast.error("Passwords do not match!");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!agreeTerms) {
+      toast.error("You must agree to the Terms of Service and Privacy Policy");
+      setIsSubmitting(false);
       return;
     }
 
     try {
       const response = await axios.post("http://localhost:3000/register", {
-        full_name: fullName,
-        email,
+        full_name: fullName.trim(),
+        email: email.trim(),
         password,
-        phone_number: phoneNumber,
-        location,
+        phone_number: phoneNumber.trim(),
+        location: location.trim(),
         role: memberType === "librarian" ? "Admin" : "User",
       });
 
       if (response.status === 201 || response.status === 200) {
-        toast.success("Signup successful! Redirecting...");
+        toast.success("Signup successful! Redirecting to login page...");
+        
+        // Redirect after successful signup
         setTimeout(() => {
-          window.location.href = "/login";
+          navigate("/login");
         }, 2000);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Signup failed! Try again.");
+      const errorMessage = err.response?.data?.message || "Signup failed! Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-blue-50">
       <Navbar />
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
       <div className="flex-grow flex items-center justify-center px-4 py-12">
         <div className="bg-white rounded-lg shadow-xl overflow-hidden max-w-xl w-full">
           {/* Header with PageVault Logo */}
@@ -153,6 +169,7 @@ const Signup = () => {
                   value={password} 
                   onChange={(e) => setPassword(e.target.value)} 
                   required 
+                  minLength="6"
                 />
               </div>
               <div className="mb-4">
@@ -164,25 +181,29 @@ const Signup = () => {
                   value={confirmPassword} 
                   onChange={(e) => setConfirmPassword(e.target.value)} 
                   required 
+                  minLength="6"
                 />
               </div>
               <div className="flex items-center mb-6">
                 <input 
+                  id="terms"
                   type="checkbox" 
                   className="h-4 w-4 text-sky-500 border-gray-300 rounded" 
                   checked={agreeTerms} 
                   onChange={(e) => setAgreeTerms(e.target.checked)} 
-                  required 
                 />
-                <label className="ml-2 text-sm text-gray-700">
+                <label htmlFor="terms" className="ml-2 text-sm text-gray-700">
                   I agree to the <a href="#" className="text-sky-600 hover:underline">Terms of Service</a> and <a href="#" className="text-sky-600 hover:underline">Privacy Policy</a>
                 </label>
               </div>
               <button 
                 type="submit" 
-                className="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-lg transition duration-150 shadow-md hover:shadow-lg"
+                className={`w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 px-4 rounded-lg transition duration-150 shadow-md hover:shadow-lg ${
+                  isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                }`}
+                disabled={isSubmitting}
               >
-                Create Account
+                {isSubmitting ? "Creating Account..." : "Create Account"}
               </button>
             </form>
             <div className="mt-6 text-center">
