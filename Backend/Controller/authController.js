@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { users } = require("../Models");
+const { where } = require("sequelize");
 
 exports.registerUser = async (req, res) => {
   const { full_name, email, phone_number, password, role, location } = req.body;
@@ -105,5 +106,21 @@ exports.loginUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("An error occurred during login.");
+  }
+};
+
+
+exports.getUsers = async (req, res) => {
+  try {
+    const usersList = await users.findAll({ 
+      where: {
+        role: "User",
+      },
+    });
+
+    res.status(200).json(usersList);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };

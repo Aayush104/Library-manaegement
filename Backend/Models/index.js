@@ -28,6 +28,7 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.users = require("./userModel")(sequelize, DataTypes);
+db.books = require("./bookModel")(sequelize, DataTypes);
 
 
 

@@ -38,9 +38,12 @@ const Login = () => {
         }
         
         // Redirect after a short delay
-        setTimeout(() => {
-          navigate("/home");
-        }, 1000);
+
+        if(response.data.role == "Admin")
+        {
+          navigate("/Admin")
+        }
+ 
       }
     } catch (error) {
       // Handle various error scenarios
