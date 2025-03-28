@@ -3,7 +3,7 @@ import axios from 'axios';
 import AddBookForm from '../Components/AddBookForm';
 import AlllUsers from '../Components/AlllUsers';
 import AllBooks from '../Components/AllBooks';
-
+import { BookOpen, Users, DollarSign, Clock } from 'lucide-react';
 const Admin = () => {
   const [activeItem, setActiveItem] = useState('home');
   const [books, setBooks] = useState([]);
@@ -55,15 +55,14 @@ const Admin = () => {
     switch(activeItem) {
       case 'addBook':
         return <AddBookForm />;
-      case 'orders':
-        return <OrdersList orders={orders} loading={loading} error={error} />;
+     
       case 'allBooks':
         return <AllBooks />;
       case 'members':
         return <AlllUsers />;
       case 'home':
       default:
-        return <Dashboard books={books} orders={orders} loading={loading} error={error} />;
+        return <Dashboard  />;
     }
   }
   
@@ -86,13 +85,7 @@ const Admin = () => {
           <span>Dashboard</span>
         </div>
         
-        <div 
-          className={`px-5 py-3 flex items-center space-x-3 cursor-pointer hover:bg-blue-500 ${activeItem === 'orders' ? 'bg-blue-500' : ''}`}
-          onClick={() => handleNavClick('orders')}
-        >
-          <span>📝</span>
-          <span>Book Rentals</span>
-        </div>
+       
         
         <div 
           className={`px-5 py-3 flex items-center space-x-3 cursor-pointer hover:bg-blue-500 ${activeItem === 'addBook' ? 'bg-blue-500' : ''}`}
@@ -127,7 +120,7 @@ const Admin = () => {
         </div>
       </div>
       
-      {/* Main Content - with left margin to account for fixed sidebar */}
+    
       <div className="flex-1 p-8 ml-64">
         {renderContent()}
       </div>
@@ -135,197 +128,149 @@ const Admin = () => {
   );
 };
 
-// Dashboard component for the home view
-const Dashboard = ({ books, orders, loading, error }) => {
-  // Get today's date in ISO format for comparison
-  const today = new Date().toISOString().split('T')[0];
-  
-  // Calculate dashboard metrics
-  const todaysRentals = orders.filter(order => 
-    order.rentalDate.split('T')[0] === today
-  ).length;
-  
-  const pendingRentals = orders.filter(order => order.status === 'Pending').length;
-  
-  // Calculate total revenue from rentals
-  const totalRevenue = orders.reduce((sum, order) => 
-    sum + parseFloat(order.rentalFee), 
-    0
-  ).toFixed(2);
-  
-  // Latest 5 rentals for the table
-  const recentRentals = [...orders].sort((a, b) => 
-    new Date(b.rentalDate) - new Date(a.rentalDate)
-  ).slice(0, 5);
-
-  // Helper function to format date to time
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
+const Dashboard = () => {
   return (
     <>
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-semibold text-gray-800">Welcome back, Librarian!</h1>
-        <span className="text-gray-600">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+        <h1 className="text-3xl font-bold text-gray-800">Library Dashboard</h1>
+        <span className="text-gray-600">March 28, 2025</span>
       </div>
-      
-      {/* Loading/Error States */}
-      {loading && (
-        <div className="text-center py-4">
-          <p className="text-gray-600">Loading dashboard data...</p>
-        </div>
-      )}
-      
-      {error && (
-        <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6">
-          <p>{error}</p>
-        </div>
-      )}
       
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm text-gray-500 mb-2">TODAY'S RENTALS</div>
-          <div className="text-3xl font-bold text-gray-800">{todaysRentals}</div>
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center">
+          <div className="bg-blue-100 p-3 rounded-full mr-4">
+            <BookOpen className="text-blue-600" size={24} />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">TOTAL BOOKS</div>
+            <div className="text-3xl font-bold text-gray-800">1,245</div>
+          </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm text-gray-500 mb-2">PENDING RENTALS</div>
-          <div className="text-3xl font-bold text-gray-800">{pendingRentals}</div>
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center">
+          <div className="bg-green-100 p-3 rounded-full mr-4">
+            <Users className="text-green-600" size={24} />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">ACTIVE MEMBERS</div>
+            <div className="text-3xl font-bold text-gray-800">528</div>
+          </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm text-gray-500 mb-2">TOTAL RENTAL REVENUE</div>
-          <div className="text-3xl font-bold text-gray-800">${totalRevenue}</div>
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center">
+          <div className="bg-purple-100 p-3 rounded-full mr-4">
+            <DollarSign className="text-purple-600" size={24} />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">TOTAL REVENUE</div>
+            <div className="text-3xl font-bold text-gray-800">$15,420</div>
+          </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="text-sm text-gray-500 mb-2">TOTAL BOOKS</div>
-          <div className="text-3xl font-bold text-gray-800">{books.length}</div>
+        <div className="bg-white rounded-lg shadow-md p-6 flex items-center">
+          <div className="bg-orange-100 p-3 rounded-full mr-4">
+            <Clock className="text-orange-600" size={24} />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">OVERDUE BOOKS</div>
+            <div className="text-3xl font-bold text-gray-800">42</div>
+          </div>
         </div>
       </div>
       
-      {/* Recent Rentals */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Rentals</h2>
-        {loading ? (
-          <p className="text-gray-500">Loading rentals...</p>
-        ) : error ? (
-          <p className="text-red-500">Error loading rentals</p>
-        ) : orders.length === 0 ? (
-          <p className="text-gray-500">No rentals found</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Rental ID</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Member</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Book</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Rental Fee</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Time</th>
-                  <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentRentals.map((order) => (
-                  <tr key={order.id}>
-                    <td className="py-3 px-4 border-b border-gray-100">#{order.id.substring(0, 8)}</td>
-                    <td className="py-3 px-4 border-b border-gray-100">{order.memberName}</td>
-                    <td className="py-3 px-4 border-b border-gray-100">{order.bookTitle}</td>
-                    <td className="py-3 px-4 border-b border-gray-100">Rs.{parseFloat(order.rentalFee).toFixed(2)}</td>
-                    <td className="py-3 px-4 border-b border-gray-100">{formatTime(order.rentalDate)}</td>
-                    <td className="py-3 px-4 border-b border-gray-100">
-                      <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium">
-                        {order.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* Library Overview Section */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Library Overview</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-3">Book Categories</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Fiction</span>
+                <span className="font-semibold">385</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Non-Fiction</span>
+                <span className="font-semibold">276</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Reference</span>
+                <span className="font-semibold">124</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Magazines</span>
+                <span className="font-semibold">64</span>
+              </div>
+            </div>
           </div>
-        )}
+          
+          <div>
+            <h3 className="text-lg font-medium text-gray-700 mb-3">Member Activity</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray-600">New Members this Month</span>
+                <span className="font-semibold">42</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Average Books per Member</span>
+                <span className="font-semibold">3.2</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Most Active Member</span>
+                <span className="font-semibold">John Doe</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Recent Activities */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Activities</h2>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b pb-3">
+            <div className="flex items-center">
+              <div className="bg-green-100 p-2 rounded-full mr-3">
+                <BookOpen className="text-green-600" size={16} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-700">Book Added</p>
+                <p className="text-xs text-gray-500">The Great Gatsby - Classic Literature</p>
+              </div>
+            </div>
+            <span className="text-xs text-gray-500">10:45 AM</span>
+          </div>
+          
+          <div className="flex items-center justify-between border-b pb-3">
+            <div className="flex items-center">
+              <div className="bg-blue-100 p-2 rounded-full mr-3">
+                <Users className="text-blue-600" size={16} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-700">New Member Registered</p>
+                <p className="text-xs text-gray-500">Emily Johnson</p>
+              </div>
+            </div>
+            <span className="text-xs text-gray-500">9:20 AM</span>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bg-red-100 p-2 rounded-full mr-3">
+                <Clock className="text-red-600" size={16} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-700">Overdue Book Reminder</p>
+                <p className="text-xs text-gray-500">To Kill a Mockingbird</p>
+              </div>
+            </div>
+            <span className="text-xs text-gray-500">8:55 AM</span>
+          </div>
+        </div>
       </div>
     </>
-  );
-};
-
-// OrdersList component for the rentals view
-const OrdersList = ({ orders, loading, error }) => {
-  return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-6">Book Rentals</h1>
-      
-      {loading ? (
-        <p className="text-gray-500">Loading rentals...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : orders.length === 0 ? (
-        <p className="text-gray-500">No rentals found</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Rental ID</th>
-                <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Member</th>
-                <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Book</th>
-                <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Rental Fee</th>
-                <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Rental Date</th>
-                <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Due Date</th>
-                <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Status</th>
-                <th className="text-left py-3 px-4 border-b border-gray-200 text-gray-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order.id}>
-                  <td className="py-3 px-4 border-b border-gray-100">#{order.id.substring(0, 8)}</td>
-                  <td className="py-3 px-4 border-b border-gray-100">{order.memberName}</td>
-                  <td className="py-3 px-4 border-b border-gray-100">{order.bookTitle}</td>
-                  <td className="py-3 px-4 border-b border-gray-100">${parseFloat(order.rentalFee).toFixed(2)}</td>
-                  <td className="py-3 px-4 border-b border-gray-100">
-                    {new Date(order.rentalDate).toLocaleDateString('en-US', { 
-                      month: 'short', 
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </td>
-                  <td className="py-3 px-4 border-b border-gray-100">
-                    {new Date(order.dueDate).toLocaleDateString('en-US', { 
-                      month: 'short', 
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </td>
-                  <td className="py-3 px-4 border-b border-gray-100">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      order.status === 'Overdue' ? 'bg-red-100 text-red-800' :
-                      order.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 border-b border-gray-100">
-                    <button className="text-blue-500 hover:text-blue-700 mr-2">
-                      Edit
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
   );
 };
 

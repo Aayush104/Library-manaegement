@@ -73,6 +73,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <NavLink to="/" className="text-gray-700 hover:text-sky-500 px-3 py-2 font-medium">Home</NavLink>
             <NavLink to="/AboutUs" className="text-gray-700 hover:text-sky-500 px-3 py-2 font-medium">About Us</NavLink>
+            <NavLink to="/Books" className="text-gray-700 hover:text-sky-500 px-3 py-2 font-medium">View Book</NavLink>
             <NavLink to="/FAQ" className="text-gray-700 hover:text-sky-500 px-3 py-2 font-medium">FAQ</NavLink>
             <NavLink to="/Contact" className="text-gray-700 hover:text-sky-500 px-3 py-2 font-medium">Contact</NavLink>
           </div>

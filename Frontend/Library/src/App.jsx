@@ -7,6 +7,7 @@ import AboutUs from './Pages/AboutUs';
 import Faqsection from './Pages/Faqsection';
 import Contact from './Pages/Contact';
 import Admin from './Pages/Admin';
+import Books from './Pages/Books';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
       <Route path="/FAQ" element={<Faqsection />} />
       <Route path="/Contact" element={<Contact />} />
       <Route path="/Admin" element={<Admin />} />
+      <Route path="/Books" element={<Books />} />
 
     </Routes>
   </Router>
