@@ -3,11 +3,14 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import Navbar from '../Components/Navbar/Navbar';
 import Footer from '../Components/Footer/Footer';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Books = () => {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigateTo = useNavigate();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -24,10 +27,38 @@ const Books = () => {
     fetchBooks();
   }, []);
 
-  const handleRentRequest = (bookId) => {
-    // Implement rent request logic 
+  const token  = localStorage.getItem("token");
+
+  let userId;
+  if(token)
+  {
+    const decodedToken = JSON.parse(atob(token.split(".")[1]));
+    userId = decodedToken.id;
+  }
+
+  const handleRentRequest = async (bookId) => {
+    // Implement rent request logic
+
+console.log("useriD", userId)
+
+    if(!token)
+    {
+      alert(`Login Before renting...`);
+      navigateTo("/login")
+      return;
+    }
+    
+const response = await axios.post("http://localhost:3000/book/requestRents",
+  {
+    userId,
+    bookId
+  }
+)
+
+console.log("response", response);
+
     console.log(`Rent request for book ${bookId}`);
-    alert(`Request submitted for book ${bookId}`);
+    alert(`Your Request Has been Submitted`);
   };
 
   if (isLoading) {

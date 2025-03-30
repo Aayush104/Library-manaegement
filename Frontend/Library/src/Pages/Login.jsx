@@ -43,6 +43,14 @@ const Login = () => {
         {
           navigate("/Admin")
         }
+
+        
+        if(response.data.role == "User")
+          {
+
+            toast.info("You Have Been Logged In..")
+            navigate("/")
+          }
  
       }
     } catch (error) {

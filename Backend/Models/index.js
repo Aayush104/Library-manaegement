@@ -29,7 +29,14 @@ db.sequelize = sequelize;
 
 db.users = require("./userModel")(sequelize, DataTypes);
 db.books = require("./bookModel")(sequelize, DataTypes);
+db.rents =require("./rentModel")(sequelize, DataTypes);
 
+ //relationship between two tables
+ db.users.hasMany(db.rents)
+ db.rents.belongsTo(db.users)
+
+ db.books.hasMany(db.rents)
+ db.rents.belongsTo(db.books)
 
 
 // Sync and seed admin
